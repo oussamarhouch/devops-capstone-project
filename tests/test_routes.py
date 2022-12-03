@@ -135,12 +135,12 @@ class TestAccountService(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(data["name"], account.name)
-        
+
     def test_account_not_found(self):
         """It should not Read an Account that is not found"""
         resp = self.client.get(f"{BASE_URL}/0")
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
-    
+
     def test_get_account_list(self):
         """It should Get a list of Accounts"""
         self._create_accounts(5)
@@ -149,7 +149,7 @@ class TestAccountService(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(len(data), 5)
-    
+
     def test_update_account(self):
         """It should Update an existing Account"""
         test_account = AccountFactory()
@@ -159,7 +159,7 @@ class TestAccountService(TestCase):
             content_type="application/json"
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        
+
         new_account = response.get_json()
         new_account["name"] = 'foo'
         response = self.client.put(f"{BASE_URL}/{new_account['id']}", json=new_account)
@@ -167,28 +167,27 @@ class TestAccountService(TestCase):
 
         updated_account = response.get_json()
         self.assertEqual(updated_account['name'], 'foo')
-    
+
     def test_update_not_found(self):
         """It should not update an Account that is not found"""
         resp = self.client.put(f"{BASE_URL}/0")
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
-    
+
     def test_delete_account(self):
         """It should Delete an Account"""
         account = self._create_accounts(1)[0]
 
         response = self.client.delete(f"{BASE_URL}/{account.id}")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-    
+
     def test_method_not_allowed(self):
         """It should not allow an illegal method call"""
         resp = self.client.delete(BASE_URL)
         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-    
+
     ######################################################################
     #  NETWORK SECURITY   T E S T   C A S E S
     ######################################################################
-
 
     def test_security_headers(self):
         """It should return security headers"""
@@ -203,7 +202,7 @@ class TestAccountService(TestCase):
         }
         for key, value in headers.items():
             self.assertEqual(response.headers.get(key), value)
-    
+
     def test_cors_security(self):
         """It should return a CORS header"""
         response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
